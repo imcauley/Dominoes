@@ -1,12 +1,7 @@
-from card import Card
-from board import Board
+from game import Game
+from player import Player
+from ai_player import AI_Player
 
-board1 = Board(7)
-
-board1.print_board()
-board1.place_card(Card(6,6),0)
-board1.place_card(Card(6,1),1)
-board1.place_card(Card(2,1),1)
-board1.place_card(Card(2,1),-1)
-board1.place_card(Card(2,6),-1)
-board1.print_board()
+players = [Player(0), AI_Player(1), AI_Player(2), AI_Player(3)]
+g = Game(7,players)
+g.play_game()
