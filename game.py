@@ -5,46 +5,62 @@ from player import Player
 import random
 
 class Game:
-    def __init__(self,size,players):
+    def __init__(self,size,players,output=True):
         self.board = Board(size)
         self.set = self.create_set(size)
         random.shuffle(self.set)
 
         self.num_pieces = ((size) * (size + 1)) // 2
 
-        print(len(self.set))
-        print(self.num_pieces)
         self.players = players
         self.create_players()
         self.turn = 0
 
+        self.output = output
+
 
     def play_game(self):
-        while(self.no_win()):
-            self.next_turn()
+        prev_length = -1
+        while(True):
+            winner = self.winner()
+            if(winner == None):
+                self.next_turn()
 
-    def no_win(self):
-        for p in self.players:
-            if p.pieces == []:
-                return False
+                if self.turn % 4 == 0:
+                    length = len(self.board.onBoard)
+                    if length == prev_length:
+                        return None
+                    else:
+                        prev_length = length
 
-        return True
+            else:
+                return winner
+
+
+
+    def winner(self):
+        for number, p in enumerate(self.players):
+            if len(p.pieces) == 0:
+                return number
+
+        return None
 
     def next_turn(self):
         player_num = self.turn % 4
-
-        print("Turn: ", self.turn)
-        self.board.print_board()
-
         player = self.players[player_num]
-        player.print_options()
+
+
+        if self.output:
+            print("Turn: ", self.turn)
+            self.board.print_board()
+            player.print_options()
+
 
         piece, position = player.get_piece(self.board)
 
         if piece != None:
             if not self.board.place_card(piece, position):
                 player.pieces.append(piece)
-                print("\n test \n")
 
         self.turn += 1
 
